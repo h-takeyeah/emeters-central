@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "emeters-central"
+version = "0.1.0"
+description = ""
+authors = ["h-takeyeah <61489178+h-takeyeah@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+bleak = "^0.14.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+exclude = ["**/__pycache__"]
+venvPath = "~/.cache/poetry"
+venv = ""
+
+reportMissingImports = true
+reportMissingTypeStubs = false
+typecheCkingMode = "strict"
+
+pythonVersion = "3"
+pythonPlatform = "All"
+
