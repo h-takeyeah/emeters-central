@@ -14,9 +14,13 @@ CHARACTERISTIC_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb"
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-handler = logging.StreamHandler()
-handler.setFormatter(logging.Formatter("%(levelname)s:%(asctime)s:%(funcName)s:%(lineno)s:%(message)s"))
-logger.addHandler(handler)
+fmt = logging.Formatter("%(levelname)s:%(asctime)s:%(funcName)s:%(lineno)s:%(message)s")
+shandler = logging.StreamHandler()
+shandler.setFormatter(fmt)
+logger.addHandler(shandler)
+# fhandler = logging.FileHandler(filename="app.log", mode='a', encoding="utf8", delay=True)
+# fhandler.setFormatter(fmt)
+# logger.addHandler(fhandler)
 
 
 def on_notify(sender: int, data: bytearray):
@@ -25,7 +29,7 @@ def on_notify(sender: int, data: bytearray):
 
 
 async def main(*, service_uuid: str, char_uuid: str):
-    logger.info("scanning device...")
+    print("scanning device...")
     device = await BleakScanner.discover(service_uuids=[service_uuid])
     if not isinstance(device, list) or len(device) != 1:
         logger.error(f"no device found (service {service_uuid})")
@@ -37,13 +41,13 @@ async def main(*, service_uuid: str, char_uuid: str):
     disconnected_event = asyncio.Event() # not thread-safe
 
     def on_disconnect(client: BleakClient):
-        logger.info("disconnected")
+        print("disconnected")
         disconnected_event.set()
 
     async with BleakClient(address_or_ble_device=addr, disconnected_callback=on_disconnect) as client:
         logger.info(f"connected to {client}")
         await client.start_notify(char_specifier=char_uuid, callback=on_notify)
-        logger.info("sleeping until device disconnects...")
+        print("sleeping until device disconnects...")
         await disconnected_event.wait() # sleep until set() is called
 
 
