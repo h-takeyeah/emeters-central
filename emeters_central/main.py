@@ -30,19 +30,22 @@ def on_notify(sender: int, data: bytearray):
 
 async def main(*, service_uuid: str, char_uuid: str):
     print("scanning device...")
-    device = await BleakScanner.discover(service_uuids=[service_uuid])
-    if not isinstance(device, list) or len(device) != 1:
+    device = await BleakScanner.find_device_by_filter(
+        filterfunc=lambda d, ad: service_uuid in ad.service_uuids
+    )
+    if device is None:
         logger.error(f"no device found (service {service_uuid})")
         return
 
-    assert isinstance(device[0].address, str)
-    addr = device[0].address
+    addr = device.address
+    assert isinstance(addr, str)
 
     disconnected_event = asyncio.Event() # not thread-safe
 
     def on_disconnect(client: BleakClient):
         print("disconnected")
         disconnected_event.set()
+
 
     async with BleakClient(address_or_ble_device=addr, disconnected_callback=on_disconnect) as client:
         logger.info(f"connected to {client}")
