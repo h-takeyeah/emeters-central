@@ -1,4 +1,4 @@
-from emeters_server import __version__
+from emeters_central import __version__
 
 
 def test_version():
