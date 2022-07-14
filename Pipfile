@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+bleak = "~=0.14.3"
+
+[dev-packages]
+pytest = "~=7.1.2"
+
+[requires]
+python_version = "3.9"
+
+[scripts]
+start = "python emeters_central/main.py" # pipenv run start
